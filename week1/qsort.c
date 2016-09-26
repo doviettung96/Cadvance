@@ -1,4 +1,4 @@
-#include "sort.h"
+#include "qsort.h"
 
 void exch(int *a, int i, int j)
 {
