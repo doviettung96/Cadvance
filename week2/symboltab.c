@@ -1,4 +1,4 @@
-#include "generictab.h"
+#include "symboltab.h"
 
 SymbolTable createSymbolTable(Entry (*makeNode)(void *, void *), int(*compare)(void *, void*))
 {
