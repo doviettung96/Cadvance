@@ -20,18 +20,23 @@ void exch(void *buf, int size, int i, int j) {
 	memcpy((char *)buf + j, temp, size);
 }
 
-void quick2Ways(void *buf, int size, int left, int right, int (*compare)(void *, void *))
+void quick2Ways(void *buf, int size, int left, int right, int (*compare)(void const*, void const*))
 {
 	//from size we know the data type
 	int i = left - 1;
 	int j = right;
 
+	if (right <= left )
+		return;
+
 	while (1)
 	{
-		while (i <= right && compare((char *)buf + (++i) * size, (char *)buf + right * size) < 0);
+		while (compare((char *)buf + (++i) * size, (char *)buf + right * size) < 0);
 		//(char *) *size = int, float ... *
 		//stop when a[i] >= pivot
-		while (j >= left && compare((char *)buf + (--j) * size, (char *)buf + right * size) > 0);
+		while (compare((char *)buf + (--j) * size, (char *)buf + right * size) > 0)
+			if(j == left)
+				break;
 		//stop when a[j] <= pivot
 
 		if (i >= j)
@@ -52,22 +57,28 @@ void quick2Ways(void *buf, int size, int left, int right, int (*compare)(void *,
 	quick2Ways(buf, size, i, right, compare);
 }
 
-void quick3Ways(void *buf, int size, int left, int right, int (*compare)(void *, void *))
+void quick3Ways(void *buf, int size, int left, int right, int (*compare)(void const*, void const*))
 {
 	int i = left - 1;
 	int j = right;
 	int p = left - 1; //for 3 ways partitioning
 	int q = right; //for 3 ways parttioning
 
-	if (right <= 1)
+	if (right <= left)
 		return;
 	while (1)
 	{
-		while (i <= right && compare((char *)buf + (++i) * size, (char *)buf + right * size) < 0);
+		while (compare((char *)buf + (++i) * size, (char *)buf + right * size) < 0);
 		//(char *) *size = int, float ... *
 		//stop when a[i] >= pivot
-		while (j >= left && compare((char *)buf + (--j) * size, (char *)buf + right * size) > 0);
+		while (compare((char *)buf + (--j) * size, (char *)buf + right * size) > 0)
+			if(j == left)
+				break;
 		//stop when a[j] <= pivot
+
+		if (i >= j)
+			break;
+		//pointer cross
 
 		exch(buf, size, i, j);
 		//just like the 2 way
@@ -80,24 +91,22 @@ void quick3Ways(void *buf, int size, int left, int right, int (*compare)(void *,
 			exch(buf, size, --q, j);
 		//if a[j] == pivot then exchange it to the right most before pivot
 
-		exch(buf, size, i, right);
-		//exchange pivot to middle
-
-		if (i >= j)
-			break;
-		//pointer cross
-
-		j = i - 1;
-		i = i + 1;
-		//move cursor to adjacent to a[i]
-
-		//from left to p and from q to right, there are all pivot-equal elements
-
-		for (int k = left; k < p; ++k, --j)
-			exch(buf, size, k, j);
-		for (int k = right - 1; k > q; --k, ++i)
-			exch(buf, size, i, k);
-		quick3Ways(buf, size, left, j, compare);
-		quick3Ways(buf, size, i, right, compare);
 	}
+	exch(buf, size, i, right);
+	//exchange pivot to middle
+
+
+
+	j = i - 1;
+	i = i + 1;
+	//move cursor to adjacent to a[i]
+
+	//from left to p and from q to right, there are all pivot-equal elements
+
+	for (int k = left; k <= p; ++k)
+		exch(buf, size, k, j--);
+	for (int k = right - 1; k >= q; --k)
+		exch(buf, size, i++, k);
+	quick3Ways(buf, size, left, j, compare);
+	quick3Ways(buf, size, i, right, compare);
 }
