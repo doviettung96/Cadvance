@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef union {
 	int i;
@@ -9,16 +10,32 @@ typedef union {
 	void *v;
 	char *s;
 	char c;
-} Jval;
+} jval;
 
-Jval new_jval_i(int i);
-Jval new_jval_l(long l);
-Jval new_jval_f(float f);
-Jval new_jval_d(double d);
-Jval new_jval_v(void *v);
-int jval_i(Jval j);
-long jval_l(Jval j);
-float jval_f(Jval j);
-double jval_d(Jval j);
-void *jval_v(Jval j);
+int jval_i(jval j);
 
+jval new_jval_int(int val);
+
+jval new_jval_float(float val);
+
+jval new_jval_double(double val);
+
+jval new_jval_string(char* val);
+
+jval new_jval_void(void* val, size_t size);
+
+jval new_jval_long(long val);
+
+jval new_jval_char(char val);
+
+void exch(jval *a, jval *b);
+
+void sort_gen(jval *arr, int l, int r, int (*compare)(jval *, jval *));
+
+void sort_gen_int(jval *arr, int l, int r);
+
+int search_gen(jval *arr, int l, int r, jval val, int (*compare)(jval *, jval *));
+
+int search_gen_int(jval *arr, int l, int r, jval val);
+
+int compare_int(jval *a, jval *b);

@@ -39,13 +39,13 @@ void main()
 	// for(int i = 0; i < MAX; ++i)
 	// 	printf("%d ", a[i]);
 	start = time(NULL);
-	quick2Ways(a, sizeof(int), 0 , MAX  , intCompare);
+	quick2Ways(a, sizeof(int), 0 , MAX - 1 , intCompare);
 	end = time(NULL);
 	// display(a, MAX);
 	printf("\nTime difference 1: %f\n", difftime(end, start));
 
 	start = time(NULL);
-	quick3Ways(b, sizeof(int), 0 , MAX , intCompare);
+	quick3Ways(b, sizeof(int), 0 , MAX - 1, intCompare);
 	end = time(NULL);
 	// display(b, MAX);
 	printf("\nTime difference 2: %f\n", difftime(end, start));
