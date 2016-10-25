@@ -37,16 +37,16 @@
 CFLAGS = -O
 OUTPUTDIR = ../implementation/
 
-all: libfdr.a
+all: libutility.a
 
-OBJS = dllist.o fields.o jval.o jrb.o
+OBJS = utility.o
 
-libfdr.a: $(OBJS)
-	ar ru $(OUTPUTDIR)libfdr.a $(OBJS)
-	ranlib $(OUTPUTDIR)libfdr.a 
+libutility.a: $(OBJS)
+	ar ru $(OUTPUTDIR)libutility.a $(OBJS)
+	ranlib $(OUTPUTDIR)libutility.a 
 
 clean:
-	rm -f core *.o $(OUTPUTDIR)libfdr.a
+	rm -f core *.o $(OUTPUTDIR)libutility.a
 
 .SUFFIXES: .c .o
 .c.o:
