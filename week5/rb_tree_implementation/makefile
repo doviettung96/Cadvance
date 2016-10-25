@@ -3,10 +3,11 @@ CC=gcc
 FLAGS =-g -Wall
 INCLUDES = -I../../lib/include
 # define any directories containing header files other than /usr/include
-LIBS = -L../../lib/libfdr
+LIBS = -L../../lib/implementation
 #define any directories containing implementation of the files in INCLUDES
 #../../lib means up 2 level then search for /lib
-LFLAGS= -lfdr
+LFLAGS= -lfdr -lutility
+#to run all the .a file
 CFLAGS=-c $(FLAG)
 SRCS=test_graph.c graph_rb.c
 OBJS= $(SRCS:.c=.o)
