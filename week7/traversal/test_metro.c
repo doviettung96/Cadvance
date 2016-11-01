@@ -43,37 +43,33 @@ void main()
 			break;
 		case 3:
 			printf("Type in a station name: ");
-			myfflush();
 			scanf("%[^\n]", name);
-			// printf("%s\n", name);
+			myfflush();
 			showAdjacent(name);
 			break;
 		case 4:
-			myfflush();
 			printf("Type in the name of 2 stations: ");
+
 			printf("\n1st: ");
 			scanf("%[^\n]", m1);
 			myfflush();
 			printf("2nd: ");
 			scanf("%[^\n]", m2);
+			myfflush();
+
 			printf("The shortest path between %s and %s: ", m1, m2);
 			shortestPath(m1, m2);
 			printf("\n");
 			break;
-		case MAXSECTION:
+		case 5:
 			free(data.station_list);
 			dropGraph(data.graph);
 			break;
-		default: printf("Choice must be from 1 to %d\n", MAXSECTION);
+		default:
+			printf("Choice must be from 1 to %d\n", MAXSECTION);
+			exit(1);
 		}
-	} while (choice != MAXSECTION);
-
-
-
-
-
-
-
+	} while (choice != MAXSECTION && choice != 0);
 }
 
 void showNode(int vertex)
