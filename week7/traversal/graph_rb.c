@@ -78,7 +78,7 @@ void BFS(Graph graph, int start, int stop, void (*func)(int))
 {
 	JRB temp;
 	JRB node;
-	int count = 1;
+	int count = 0;
 	int i;
 	int v;
 	int n;
@@ -95,7 +95,7 @@ void BFS(Graph graph, int start, int stop, void (*func)(int))
 		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
 		exit(1);
 	}
-	for (i = 1; i < count; ++i)
+	for (i = 0; i < count; ++i)
 		visited[i] = 0;
 
 	int output[count];
@@ -137,6 +137,71 @@ end:
 	free(visited);
 	free_dllist(queue);
 }
+
+void DFS(Graph graph, int start, int stop, void (*func)(int))
+{
+JRB temp;
+	JRB node;
+	int count = 0;
+	int i;
+	int v;
+	int n;
+	int *visited;
+	Dllist stack = new_dllist();
+
+	jrb_traverse(temp, graph)
+	{
+		count++;
+	}
+
+	visited = (int*)malloc(sizeof(int) * count);
+	if (visited == NULL) {
+		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
+		exit(1);
+	}
+	for (i = 0; i < count; ++i)
+		visited[i] = 0;
+
+	int output[count];
+	node = jrb_find_int(graph, start);
+	if (graph == NULL)
+		goto end;
+
+
+	dll_append(stack, new_jval_i(start));
+
+	while (!dll_empty(stack))
+	{
+		Dllist node = dll_last(stack);
+		v = jval_i(node->val);
+		dll_delete_node(node);
+
+		if (visited[v] == 0)
+		{
+			func(v);
+			visited[v] = 1;
+		}
+
+		if (v == stop)
+			goto end;
+		JRB u_node = jrb_find_int(graph, v);
+
+		if (u_node == NULL)
+			continue;
+
+		n = getAdjacentVertices(graph, v, output);
+		for (i = 0; i < n; ++i)
+			if (visited[output[i]] == 0)
+				dll_append(stack, new_jval_i(output[i]));
+	}
+
+end:
+	printf("\n");
+
+	free(visited);
+	free_dllist(stack);
+}
+
 
 void dropGraph(Graph graph)
 {
