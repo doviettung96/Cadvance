@@ -1,14 +1,18 @@
 #include "utility.h"
 
+//update: put myfflush after scanf %[^\n] for every case
+
 int getMenu(char sections[][40], int maxsection) {
-	int choice;
+	char choice[30];
 	printf("\n");
 	for (int i = 0; i < maxsection; ++i)
 		printf("%2d. %s\n", i + 1, sections[i]);
 	printf("Your choice: ");
-	scanf("%d", &choice);
+	scanf("%[^\n]", choice);
+	myfflush();
+	//as always, after a scanf [^\n] we must put a myfflush()
 	printf("\n");
-	return choice;
+	return atoi(choice);
 }
 
 void dupChar(char c, int times)
@@ -60,7 +64,7 @@ void standardizeName(char *str) {
 				i++;
 	}
 
-	if (s[z - 1] == ' ') 
+	if (s[z - 1] == ' ')
 		z--;
 	for (i = 0; i < z; ++i)
 		str[i] = s[i];
