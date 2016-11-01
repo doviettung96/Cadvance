@@ -1,5 +1,7 @@
 #include "graph_rb.h"
 
+#define MAXSECTION 5
+
 typedef struct {
 	char name[100];
 } station;
@@ -22,32 +24,56 @@ void main()
 	int i;
 	char name[100];
 	char m1[100], m2[100];
-	//do not use *output when you don't malloc it
-	data = inputfromFile("input.graph");
-	printf("%s\n", "LIST OF METRO STATIONS");
-	for (i = 0; i < data.station_num; ++i)
-	{
-		printf("%3d. %s\n", i + 1, data.station_list[i].name);
-	}
-	printf("\n\n");
+	char sections[MAXSECTION][40] = {"Input from file", "Show the list of metro stations", "Find nearby stations", "Shortest path", "Exit"};
+	int choice;
+	do {
+		choice = getMenu(sections, MAXSECTION);
+		switch (choice)
+		{
+		case 1:
+			data = inputfromFile("input.graph");
+			break;
+		case 2:
+			printf("%s\n", "LIST OF METRO STATIONS");
+			for (i = 0; i < data.station_num; ++i)
+			{
+				printf("%3d. %s\n", i + 1, data.station_list[i].name);
+			}
+			printf("\n\n");
+			break;
+		case 3:
+			printf("Type in a station name: ");
+			myfflush();
+			scanf("%[^\n]", name);
+			// printf("%s\n", name);
+			showAdjacent(name);
+			break;
+		case 4:
+			myfflush();
+			printf("Type in the name of 2 stations: ");
+			printf("\n1st: ");
+			scanf("%[^\n]", m1);
+			myfflush();
+			printf("2nd: ");
+			scanf("%[^\n]", m2);
+			printf("The shortest path between %s and %s: ", m1, m2);
+			shortestPath(m1, m2);
+			printf("\n");
+			break;
+		case MAXSECTION:
+			free(data.station_list);
+			dropGraph(data.graph);
+			break;
+		default: printf("Choice must be from 1 to %d\n", MAXSECTION);
+		}
+	} while (choice != MAXSECTION);
 
-	printf("Type in a station name: ");
-	scanf("%[^\n]", name);
-	// printf("%s\n", name);
-	showAdjacent(name);
-	myfflush();
 
-	printf("Type in the name of 2 stations: ");
-	printf("\n1st: ");
-	scanf("%[^\n]", m1);
-	myfflush();
-	printf("2nd: ");
-	scanf("%[^\n]", m2);
-	printf("The shortest path between %s and %s: ", m1, m2);
-	shortestPath(m1, m2);
-	printf("\n");
-	free(data.station_list);
-	dropGraph(data.graph);
+
+
+
+
+
 }
 
 void showNode(int vertex)
