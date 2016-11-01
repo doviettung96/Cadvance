@@ -10,5 +10,5 @@ void dupChar(char c, int times);
 void myfflush();
 //scanf the space
 void standardizeName(char *str);
-// standardized name such as trim string, turn a >> A for first leter
+// standardized name
 
