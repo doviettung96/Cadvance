@@ -18,6 +18,7 @@ map inputfromFile(char fileName[]);
 void showAdjacent(char name[]);
 void showNode(int vertex);
 void shortestPath(char m1[], char m2[]);
+map get_data_from_file(const char *file_name);
 
 void main()
 {
@@ -31,7 +32,8 @@ void main()
 		switch (choice)
 		{
 		case 1:
-			data = inputfromFile("input.graph");
+			data = get_data_from_file("input.graph");
+			// data = inputfromFile("input.graph");
 			break;
 		case 2:
 			printf("%s\n", "LIST OF METRO STATIONS");
@@ -57,7 +59,7 @@ void main()
 			scanf("%[^\n]", m2);
 			myfflush();
 
-			printf("The shortest path between %s and %s: ", m1, m2);
+			printf("The shortest path between %s and %s: \n", m1, m2);
 			shortestPath(m1, m2);
 			printf("\n");
 			break;
@@ -80,7 +82,7 @@ void showNode(int vertex)
 void shortestPath(char m1[], char m2[])
 {
 	int i;
-	int v1, v2;
+	int v1 = 0, v2 = 0;
 	for (i = 0; i < data.station_num; ++i)
 	{
 		if (strcmp(data.station_list[i].name, m1) == 0)
@@ -88,13 +90,17 @@ void shortestPath(char m1[], char m2[])
 		if (strcmp(data.station_list[i].name, m2) == 0)
 			v2 = i + 1;
 	}
-	BFS(data.graph, v1, v2, showNode);
+
+	if (v1 != 0 && v2 != 0)
+		BFS(data.graph, v1, v2, showNode);
+	else
+		printf("Wrong station name\n");
 }
 
 void showAdjacent(char name[])
 {
 	int i;
-	int v1;
+	int v1 = 0;
 	int output[10];
 	int numberofAdjacent;
 
@@ -105,14 +111,98 @@ void showAdjacent(char name[])
 			break;
 		}
 
-	numberofAdjacent = getAdjacentVertices(data.graph, v1, output);
-	// printf("%d\n", numberofAdjacent);
-	for (i = 0; i < numberofAdjacent; ++i)
-		showNode(output[i]);
-	printf("\n\n");
+	if (v1 != 0)
+	{
+		numberofAdjacent = getAdjacentVertices(data.graph, v1, output);
+		// printf("%d\n", numberofAdjacent);
+		for (i = 0; i < numberofAdjacent; ++i)
+			showNode(output[i]);
+		printf("\n\n");
+	}
+	else
+		printf("Wrong station name\n");
 }
 
 
+map get_data_from_file(const char *file_name) {
+	FILE *f = fopen(file_name, "r");
+	if (f == NULL) {
+		fprintf(stderr, "Can't Open file %s !!\n", file_name);
+		exit(1);
+	}
+
+	char temp[100];
+
+	while (1) {
+		fgets(temp, 100, f);
+		if (strcmp(temp, "[STATIONS]\n") == 0)
+			break;
+	}
+
+	int MAX = 10;
+	map ret;
+
+	ret.station_list = (station *)malloc(sizeof(station) * MAX);
+	ret.station_num = 0;
+	ret.graph = createGraph();
+
+	// station name parse
+
+	while (1) {
+		fgets(temp, 100, f);
+		if (strcmp(temp, "[LINES]\n") == 0)
+			break;
+		if (strcmp(temp, "\n") == 0)
+			continue;
+
+		int i;
+		for (i = 0; temp[i] != '\0' && temp[i] != '='; i++);
+		if (temp[i] == '\0')
+			continue;
+
+		if (ret.station_num == MAX - 1) {
+			MAX += 10;
+			ret.station_list = (station *)realloc(ret.station_list, sizeof(station) * MAX);
+			if (ret.station_list == NULL) {
+				fprintf(stderr, "Reallocate failed in %s:%d !!\n", __FILE__, __LINE__);
+				exit(1);
+			}
+		}
+
+		sscanf(temp, "S%*d=%[^\n]\n", ret.station_list[(ret.station_num)++].name);
+	}
+
+	// lines parse
+	while (1) {
+		fgets(temp, 100, f);
+		if (feof(f))
+			break;
+		if (strcmp(temp, "\n") == 0)
+			continue;
+
+		int i;
+		for (i = 0; temp[i] != '\0' && temp[i] != '='; i++);
+		if (temp[i] == '\0')
+			continue;
+		char temp2[100];
+
+		sscanf(temp, "%*[^=]=%[^\n]", temp2);
+
+		char *p = strtok(temp2, " ");
+		int v;
+		v = p[1] - '0';
+		p = strtok(NULL, " ");
+		while ( p != NULL )
+		{
+			int v2 = p[1] - '0';
+			addEdge(ret.graph, v, v2);
+			v = v2;
+			p = strtok(NULL, " ");
+		}
+	}
+	fclose(f);
+	return ret;
+}
 
 map inputfromFile(char fileName[])
 {
@@ -127,8 +217,6 @@ map inputfromFile(char fileName[])
 	int i = 0;
 	char temp[100];
 	char str[100];
-	char *token;
-	int v1, v2;
 
 	input.station_list = (station *)malloc(sizeof(station) * MAX);
 	input.graph = createGraph();
@@ -143,7 +231,7 @@ map inputfromFile(char fileName[])
 
 	for (int j = 0; j < MAX - 1; ++j)
 	{
-		fscanf(fin, "S%*d=%[^\n]\n", input.station_list[input.station_num++].name);
+		fscanf(fin, "S%*d=%[^\n]\n", input.station_list[(input.station_num)++].name);
 		// printf("%s ", input.station_list[j].name);
 	}
 	// printf("Error!\n");
@@ -162,20 +250,31 @@ map inputfromFile(char fileName[])
 	while (!feof(fin))
 	{
 		// printf("Error!\n");
-		fscanf(fin, "M%*d=%[^\n]\n", str);
+		fscanf(fin, "%*[^=]=%[^\n]\n", str);
 
-		token = strtok(str, " ");
-		v1 = token[1] - '0';
+		char *token = strtok(str, " ");
+		int v;
+		v = token[1] - '0';
 		token = strtok(NULL, " ");
-
-		//get the first token]
-		while (token != NULL)
+		while ( token != NULL )
 		{
-			v2 = token[1] - '0';
-			addEdge(input.graph, v1, v2);
-			v1 = v2;
+			int v2 = token[1] - '0';
+			addEdge(input.graph, v, v2);
+			v = v2;
 			token = strtok(NULL, " ");
 		}
+		// token = strtok(str, " ");
+		// v1 = token[1] - '0';
+		// token = strtok(NULL, " ");
+
+		// //get the first token]
+		// while (token != NULL)
+		// {
+		// 	v2 = token[1] - '0';
+		// 	addEdge(input.graph, v1, v2);
+		// 	v1 = v2;
+		// 	token = strtok(NULL, " ");
+		// }
 		// printf("Error!\n");
 
 		//walk through other tokens

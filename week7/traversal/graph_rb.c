@@ -83,7 +83,6 @@ void BFS(Graph graph, int start, int stop, void (*func)(int))
 	int v;
 	int n;
 	int *visited;
-	Dllist queue = new_dllist();
 
 	jrb_traverse(temp, graph)
 	{
@@ -95,8 +94,11 @@ void BFS(Graph graph, int start, int stop, void (*func)(int))
 		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
 		exit(1);
 	}
+
 	for (i = 0; i < count; ++i)
 		visited[i] = 0;
+
+	Dllist queue = new_dllist();
 
 	int output[count];
 	node = jrb_find_int(graph, start);
@@ -140,7 +142,7 @@ end:
 
 void DFS(Graph graph, int start, int stop, void (*func)(int))
 {
-JRB temp;
+	JRB temp;
 	JRB node;
 	int count = 0;
 	int i;
