@@ -25,7 +25,7 @@ void printOut(map data);
 void hasCommonFriends(char name[], map data);
 
 
-void main()
+void main(int argc, char **argv)
 {
 	int choice;
 	char search[100];
@@ -35,7 +35,7 @@ void main()
 		switch (choice)
 		{
 		case 1:
-			input = inputfromFile("friendship.txt");
+			input = inputfromFile(argv[1]);
 			showVertices(input);
 			// for (int i = 0; i < input.relationship_num; ++i)
 			// 	printf(" %s ", input.list[i].name);
@@ -71,7 +71,7 @@ void main()
 int compareName(char p1[], map data)
 {
 	int i = 0;
-	for (i = 0; i < data.relationship_num; ++i)
+	for (i = 0; i < data.number; ++i)
 		if (strcmp(p1, data.list[i].name) == 0)
 			return i;
 	return -1;
@@ -96,8 +96,7 @@ map inputfromFile(char fileName[])
 	data.list = (person *)malloc(sizeof(person) * data.relationship_num);
 	data.graph = createGraph();
 	data.number = 0;
-	for (i = 0; i < data.relationship_num; ++i)
-		data.list[i].friends_num = 0;
+
 	for (i = 0; i < data.relationship_num; ++i)
 	{
 		fscanf(f, "\"%[^\"]\" \"%[^\"]\"\n", p1, p2);
@@ -112,6 +111,9 @@ map inputfromFile(char fileName[])
 		// printf("%d %d\n", v1, v2);
 		addEdge(data.graph, v1, v2);
 	}
+
+	for (i = 0; i < data.number; ++i)
+		data.list[i].friends_num = 0;
 	printf("Input success!\n");
 	return data;
 	fclose(f);
@@ -122,13 +124,13 @@ map inputfromFile(char fileName[])
 void showVertices(map data)
 {
 	int i, j;
-	int count = 0;
+	// int count = 0;
 	printf("Total vertices: %d\n", data.number);
-	for (i = 0; i < data.number - 1; ++i)
-		for (j = i + 1; j < data.number; ++j)
-			if (adjacent(data.graph, i, j))
-				count++;
-	printf("Total edges: %d\n", count);
+	// for (i = 0; i < data.number - 1; ++i)
+	// 	for (j = i + 1; j < data.number; ++j)
+	// 		if (adjacent(data.graph, i, j))
+	// 			count++;
+	printf("Total edges: %d\n", data.relationship_num);
 }
 
 void showNode(int vertex)
@@ -143,13 +145,13 @@ void showAdjacent(char name[])
 	int output[10];
 	int numberofAdjacent;
 
-	for (i = 0; i < input.relationship_num; ++i)
+	for (i = 0; i < input.number; ++i)
 		if (strcmp(input.list[i].name, name) == 0)
 		{
 			v1 = i;
 			break;
 		}
-
+	// printf("%d\n", input.number);
 	if (v1 != -1)
 	{
 		numberofAdjacent = getAdjacentVertices(input.graph, v1, output);
@@ -167,9 +169,9 @@ void showAdjacent(char name[])
 void printOut(map data)
 {
 	int max = 0;
-	int temp[data.relationship_num];
-	int numberfriends[data.relationship_num];
-	for (int i = 0; i < data.relationship_num; ++i)
+	int temp[data.number];
+	int numberfriends[data.number];
+	for (int i = 0; i < data.number; ++i)
 	{
 		data.list[i].friends_num = getAdjacentVertices(data.graph, i, temp);
 		numberfriends[i] = data.list[i].friends_num;
@@ -184,9 +186,9 @@ void printOut(map data)
 	for (int j = 1; j <= max; ++j)
 	{
 		printf("%d ", j);
-		for (int i = 0; i < data.relationship_num; ++i)
+		for (int i = 0; i < data.number; ++i)
 			if (data.list[i].friends_num == j)
-				printf("%s ", data.list[i].name);
+				printf(" \"%s\" ", data.list[i].name);
 		printf("\n");
 	}
 }
@@ -198,7 +200,11 @@ void hasCommonFriends(char name[], map data)
 	int v2;
 	int i;
 	int flag = 0;
+	int visited[data.relationship_num];
 	int output[data.relationship_num];
+
+	for (i = 0; i < data.relationship_num; ++i)
+		visited[i] = 0;
 	for (i = 0; i < data.relationship_num; ++i)
 		if (strcmp(data.list[i].name, name) == 0)
 		{
@@ -217,8 +223,11 @@ void hasCommonFriends(char name[], map data)
 			{
 				if (adjacent(data.graph, v2, j))
 				{
-					if (j != v1)
+					if (j != v1 && visited[j] != 1)
+					{
 						showNode(j);
+						visited[j] = 1;
+					}
 					flag = 1;
 				}
 			}

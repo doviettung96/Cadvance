@@ -1,0 +1,6 @@
+5
+"An" "Dung"
+"An" "Mai"
+"An" "Truc"
+"Dung" "Mai"
+"Truc" "Mai"
