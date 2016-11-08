@@ -21,6 +21,7 @@ map inputfromFile(char fileName[]);
 void showVertices(map data);
 void showNode(int vertex);
 void showAdjacent(char name[]);
+void printOut(map data);
 
 void main()
 {
@@ -45,7 +46,7 @@ void main()
 			showAdjacent(search);
 			break;
 		case 3:
-
+			printOut(input);
 			break;
 		case 4: break;
 		case MAXSECTION:
@@ -91,17 +92,15 @@ map inputfromFile(char fileName[])
 		data.list[i].friends_num = 0;
 	for (i = 0; i < data.relationship_num; ++i)
 	{
-		fscanf(f, "%s %s\n", p1, p2);
+		fscanf(f, "\"%[^\"]\" \"%[^\"]\"\n", p1, p2);
 		// printf("%s %s\n", p1, p2);
 		if (compareName(p1, data) == -1)
 			strcpy(data.list[data.number++].name, p1);
 
 		v1 = compareName(p1, data);
-		data.list[v1].friends_num++;
 		if (compareName(p2, data) == -1)
 			strcpy(data.list[data.number++].name, p2);
 		v2 = compareName(p2, data);
-		data.list[v1].friends_num++;
 		// printf("%d %d\n", v1, v2);
 		addEdge(data.graph, v1, v2);
 	}
@@ -156,7 +155,30 @@ void showAdjacent(char name[])
 		printf("Wrong name\n");
 }
 
+
 void printOut(map data)
 {
+	int max = 0;
+	int temp[data.relationship_num];
+	int numberfriends[data.relationship_num];
+	for (int i = 0; i < data.relationship_num; ++i)
+	{
+		data.list[i].friends_num = getAdjacentVertices(data.graph, i, temp);
+		numberfriends[i] = data.list[i].friends_num;
+		if (max < numberfriends[i])
+			max = numberfriends[i];
+		// printf("Name: %s Friends num: %d\n", data.list[i].name, data.list[i].friends_num);
+		// printf("MAX %d\n", max);
 
+	}
+
+
+	for (int j = 0; j <= max; ++j)
+	{
+		printf("%d ", j);
+		for (int i = 0; i < data.relationship_num; ++i)
+			if (data.list[i].friends_num == j)
+				printf("%s ", data.list[i].name);
+		printf("\n");
+	}
 }
