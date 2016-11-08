@@ -37,8 +37,6 @@ void main(int argc, char **argv)
 		case 1:
 			input = inputfromFile(argv[1]);
 			showVertices(input);
-			// for (int i = 0; i < input.relationship_num; ++i)
-			// 	printf(" %s ", input.list[i].name);
 			printf("\n");
 			break;
 		case 2:
@@ -124,12 +122,7 @@ map inputfromFile(char fileName[])
 void showVertices(map data)
 {
 	int i, j;
-	// int count = 0;
 	printf("Total vertices: %d\n", data.number);
-	// for (i = 0; i < data.number - 1; ++i)
-	// 	for (j = i + 1; j < data.number; ++j)
-	// 		if (adjacent(data.graph, i, j))
-	// 			count++;
 	printf("Total edges: %d\n", data.relationship_num);
 }
 
@@ -151,7 +144,6 @@ void showAdjacent(char name[])
 			v1 = i;
 			break;
 		}
-	// printf("%d\n", input.number);
 	if (v1 != -1)
 	{
 		numberofAdjacent = getAdjacentVertices(input.graph, v1, output);
@@ -177,9 +169,6 @@ void printOut(map data)
 		numberfriends[i] = data.list[i].friends_num;
 		if (max < numberfriends[i])
 			max = numberfriends[i];
-		// printf("Name: %s Friends num: %d\n", data.list[i].name, data.list[i].friends_num);
-		// printf("MAX %d\n", max);
-
 	}
 
 
