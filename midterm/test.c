@@ -22,18 +22,20 @@ void showVertices(map data);
 void showNode(int vertex);
 void showAdjacent(char name[]);
 void printOut(map data);
+void hasCommonFriends(char name[], map data);
+
 
 void main()
 {
 	int choice;
 	char search[100];
-	char sections[MAXSECTION][40] = {"Input from file", "Search for friends", "Print out", "Common friends", "Exit"};
+	char sections[MAXSECTION][40] = {"Input from file", "Search for friends", "Print out", "Show people have common friends", "Exit"};
 	do {
 		choice = getMenu(sections, MAXSECTION);
 		switch (choice)
 		{
 		case 1:
-			input = inputfromFile("input.txt");
+			input = inputfromFile("friendship.txt");
 			showVertices(input);
 			// for (int i = 0; i < input.relationship_num; ++i)
 			// 	printf(" %s ", input.list[i].name);
@@ -46,9 +48,15 @@ void main()
 			showAdjacent(search);
 			break;
 		case 3:
+			printf("Report: \n");
 			printOut(input);
 			break;
-		case 4: break;
+		case 4:
+			printf("Type in a name: ");
+			scanf("%[^\n]", search);
+			myfflush();
+			hasCommonFriends(search, input);
+			break;
 		case MAXSECTION:
 			free(input.list);
 			dropGraph(input.graph);
@@ -104,7 +112,7 @@ map inputfromFile(char fileName[])
 		// printf("%d %d\n", v1, v2);
 		addEdge(data.graph, v1, v2);
 	}
-
+	printf("Input success!\n");
 	return data;
 	fclose(f);
 }
@@ -173,7 +181,7 @@ void printOut(map data)
 	}
 
 
-	for (int j = 0; j <= max; ++j)
+	for (int j = 1; j <= max; ++j)
 	{
 		printf("%d ", j);
 		for (int i = 0; i < data.relationship_num; ++i)
@@ -181,4 +189,44 @@ void printOut(map data)
 				printf("%s ", data.list[i].name);
 		printf("\n");
 	}
+}
+
+void hasCommonFriends(char name[], map data)
+{
+	int numberofAdjacent;
+	int v1;
+	int v2;
+	int i;
+	int flag = 0;
+	int output[data.relationship_num];
+	for (i = 0; i < data.relationship_num; ++i)
+		if (strcmp(data.list[i].name, name) == 0)
+		{
+			v1 = i;
+			break;
+		}
+	if (v1 != -1)
+	{
+		numberofAdjacent = getAdjacentVertices(data.graph, v1, output);
+		// printf("%d\n", numberofAdjacent);
+		printf("People have common friends with %s are: ", name);
+		for (i = 0; i < numberofAdjacent; ++i)
+		{
+			v2 = output[i];
+			for (int j = 0; j < data.relationship_num; ++j)
+			{
+				if (adjacent(data.graph, v2, j))
+				{
+					if (j != v1)
+						showNode(j);
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0)
+			printf("No common friends\n");
+		printf("\n\n");
+	}
+	else
+		printf("Wrong name\n");
 }
