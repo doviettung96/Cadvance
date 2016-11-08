@@ -93,7 +93,7 @@ map inputfromFile(char fileName[])
 
 	fscanf(f, "%d\n", &data.relationship_num);
 	// printf("data number: %d\n", data.relationship_num);
-	data.list = (person *)malloc(sizeof(person) * data.relationship_num);
+	data.list = (person *)malloc(sizeof(person) * data.relationship_num * 2);
 	data.graph = createGraph();
 	data.number = 0;
 
@@ -200,12 +200,12 @@ void hasCommonFriends(char name[], map data)
 	int v2;
 	int i;
 	int flag = 0;
-	int visited[data.relationship_num];
-	int output[data.relationship_num];
+	int visited[data.number];
+	int output[data.number];
 
-	for (i = 0; i < data.relationship_num; ++i)
+	for (i = 0; i < data.number; ++i)
 		visited[i] = 0;
-	for (i = 0; i < data.relationship_num; ++i)
+	for (i = 0; i < data.number; ++i)
 		if (strcmp(data.list[i].name, name) == 0)
 		{
 			v1 = i;
@@ -219,7 +219,7 @@ void hasCommonFriends(char name[], map data)
 		for (i = 0; i < numberofAdjacent; ++i)
 		{
 			v2 = output[i];
-			for (int j = 0; j < data.relationship_num; ++j)
+			for (int j = 0; j < data.number; ++j)
 			{
 				if (adjacent(data.graph, v2, j))
 				{
