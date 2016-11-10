@@ -50,20 +50,32 @@ void addEdge(Graph graph, int v1, int v2)
 
 int getAdjacentVertices (Graph graph, int v, int* output)
 {
+	// if (graph == NULL)
+	// 	return 0;
+
+	// JRB  adjacentofV1;
+	// int total = 0;
+	// JRB findNode = jrb_find_int(graph, v);
+
+	// if (findNode == NULL)
+	// 	return 0;
+	// adjacentofV1 = (JRB) jval_v(findNode->val);
+	// jrb_traverse(findNode, adjacentofV1)
+	// {
+	// 	output[total++] = jval_i(findNode->key);
+	// }
+	// return total;
+
 	if (graph == NULL)
 		return 0;
-
-	JRB  adjacentofV1;
-	int total = 0;
-	JRB findNode = jrb_find_int(graph, v);
-
-	if (findNode == NULL)
+	JRB node = jrb_find_int(graph, v);
+	JRB tree;
+	if (node == NULL)
 		return 0;
-	adjacentofV1 = (JRB) jval_v(findNode->val);
-	jrb_traverse(findNode, adjacentofV1)
-	{
-		output[total++] = jval_i(findNode->key);
-	}
+	int total = 0;
+	tree = (JRB) jval_v(node->val);
+	jrb_traverse(node, tree)
+	output[total++] = jval_i(node->key);
 	return total;
 }
 

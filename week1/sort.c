@@ -1,11 +1,11 @@
 #include "sort.h"
 
-void exch(int *a, int i, int j)
-{
+void swap(int *a, int *b) {
 	int temp;
-	temp = a[i];
-	a[i] = a[j];
-	a[j] = temp;
+	temp = *a;
+	*a = *b;
+	*b = temp;
+
 }
 
 void quick2Ways(int a[], int left, int right)
@@ -24,13 +24,13 @@ void quick2Ways(int a[], int left, int right)
 			break;
 		//when pointer cross
 
-		exch(a, i, j);
+		swap(&a[i], &a[j]);
 		//take the smaller to the left and bigger to the right of the pivot
 	}
 
 
-	exch(a, i, right);
-	//exchange pivot into middle
+	swap(&a[i], &a[right]);
+	//swapange pivot into middle
 	j = i - 1;
 	i = i + 1;
 	//move cursor to adjacent to a[i]
@@ -52,24 +52,24 @@ void quick3Ways(int a[], int left, int right)
 		while (i <= right && a[++i] < pivot);
 		while (j >= left && a[--j] > pivot)
 
-			exch(a, i, j);
+			swap(&a[i], &a[j]);
 		//just like the 2 way
 
 		if (a[i] == pivot)
 		{
 			p++;
-			exch(a, p, i);
+			swap(&a[p], &a[i]);
 		}
-		//if a[i] == pivot then exchange it to the left
+		//if a[i] == pivot then swapange it to the left
 		if (a[j] == pivot)
 		{
 			q--;
-			exch(a, q, j);
+			swap(&a[q], &a[j]);
 		}
-		//if a[j] == pivot then exchange it to the right most before pivot
+		//if a[j] == pivot then swapange it to the right most before pivot
 
-		exch(a, i, right);
-		//exchange pivot to middle
+		swap(&a[i], &a[right]);
+		//swapange pivot to middle
 
 		if (i >= j)
 			break;
@@ -82,9 +82,9 @@ void quick3Ways(int a[], int left, int right)
 		//from left to p and from q to right, there are all pivot-equal elements
 
 		for (int k = left; k < p; ++k, --j)
-			exch(a, k, j);
+			swap(&a[k], &a[j]);
 		for (int k = right - 1; k > q; --k, ++i)
-			exch(a, i, k);
+			swap(&a[i], &a[k]);
 		quick3Ways(a, left, j);
 		quick3Ways(a, i, right);
 	}

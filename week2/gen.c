@@ -110,3 +110,16 @@ void quick3Ways(void *buf, int size, int left, int right, int (*compare)(void co
 	quick3Ways(buf, size, left, j, compare);
 	quick3Ways(buf, size, i, right, compare);
 }
+
+int search(void *buf, int size, int left, int right, void *val, int (*compare)(void *, void *))
+{
+	if(left >= right)
+		return -1;
+	int i = (left + right)/2;
+	if(compare(val, (char *)(buf + i * size)) == 0)
+		return i;
+	else if(compare(val, (char *)(buf + i * size)) > 1)
+		return search(buf, size, left, i - 1, val, compare);
+	else
+		return search(buf, size, i + 1, right, val, compare);
+}

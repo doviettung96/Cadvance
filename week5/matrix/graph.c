@@ -25,7 +25,7 @@ int adjacent(Graph graph, int v1, int v2)
 {
 	if (graph.matrix == NULL)
 		return 0;
-	if (graph.matrix[v1 * (graph.sizeMax) + v2] == 1 & graph.matrix[v2 * (graph.sizeMax) + v1] == 1)
+	if (graph.matrix[v1 * (graph.sizeMax) + v2] == 1 && graph.matrix[v2 * (graph.sizeMax) + v1] == 1)
 		return 1;
 	return 0;
 }

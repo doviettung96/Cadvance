@@ -3,7 +3,7 @@
 #include <time.h>
 #include <string.h>
 
-#define MAX 10000
+#define MAX 100
 
 int intCmp(void const *x, void const *y)
 {
@@ -52,11 +52,11 @@ void main()
 	// display(a, MAX);
 	printf("Time difference 1: %f\n", difftime(end, start));
 
-	start = time(NULL);
-	quick3Ways(b, 0, MAX);
-	end = time(NULL);
-	// display(a, MAX);
-	printf("Time difference 2: %f\n", difftime(end, start));
+	// start = time(NULL);
+	// quick3Ways(b, 0, MAX);
+	// end = time(NULL);
+	// // display(a, MAX);
+	// printf("Time difference 2: %f\n", difftime(end, start));
 
 	start = time(NULL);
 	qsort(c, MAX, sizeof(int), intCmp);
