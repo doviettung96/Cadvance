@@ -18,8 +18,13 @@ int hasEdge(Graph graph, int v1, int v2);
 void addEdge(Graph graph, int v1, int v2);
 int inDegree(Graph graph, int v, int *output);
 int outDegree(Graph graph, int v, int *output);
+void showVertexName(Graph graph, int id);
 int getMaxId(Graph g);
 int getMinId(Graph g);
 void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));
 void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));
+int isCyclicUtil(Graph graph, int vertex);
+//check for vertex v about existing a cycle
+int DAG(Graph graph);
+//check for acylic graph
 void dropGraph(Graph graph);

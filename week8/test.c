@@ -14,12 +14,15 @@ void main()
     addEdge(g, 1, 2);
     addEdge(g, 2, 0);
     addEdge(g, 1, 3);
-    for (int i = 0; i <= 3; ++i)
-        printf("%s ", getVertexName(g, i));
-    printf("\n");
-//    if (DAG(g))
-//    printf("The graph is acycle\n");
-//    else
-//    printf("Have cycles in the graph\n");
+    // for (int i = 0; i <= 3; ++i)
+    //     printf("%s ", getVertexName(g, i));
+    // printf("\n");
+    // BFS(g, 1, -1, showVertexName);
+    // DFS(g, 1, -1, showVertexName);
+
+    if (DAG(g))
+        printf("The graph is acycle\n");
+    else
+        printf("Have cycles in the graph\n");
     dropGraph(g);
 }
