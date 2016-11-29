@@ -2,56 +2,46 @@
 
 Graph createGraph()
 {
-    Graph graph;
-    graph.edges = make_jrb();
-    graph.vertices = make_jrb();
+	Graph graph;
+	graph.edges = make_jrb();
+	graph.vertices = make_jrb();
 	return graph;
-}
-
-int hasEdge(Graph graph, int v1, int v2)
-{
-if (graph.edges == NULL || graph.vertices == NULL)
-    return;
-
-  JRB node = jrb_find_int(graph.edges, v1);
-  if (node == NULL)
-    return 0;
-  JRB tree = (JRB) jval_v(node ->val);
-  JRB findV2 = jrb_find_int(tree, v2);
-  if(findV2 != NULL)
-    return 1;
-  return 0;
-
 }
 
 void addVertex(Graph graph, int id, char *name)
 {
-if (graph.edges == NULL || graph.vertices == NULL)
-    return;
-
-JRB node, tree;
-node = jrb_find_int(graph.vertices, id);
-if(node != NULL)
-    {
-    printf("Already have this node\n");
-    return;
-    }
-else
-jrb_insert_int(graph.vertices, id, new_jval_s(name));
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+	JRB node = jrb_find_int(graph.vertices, id);
+	if (node == NULL)
+		jrb_insert_int(graph.vertices, id, new_jval_s(name));
 }
 
-char *getVertexName(graph graph, int id)
+char *getVertexName(Graph graph, int id)
 {
-  if (graph.edges == NULL || graph.vertices == NULL)
-    return NULL;
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return NULL;
 
-  JRB node = jrb_find_int(graph.vertices, id);
-  if (node != NULL) {
-    return jval_s(node->val);
-  }
+	JRB node = jrb_find_int(graph.vertices, id);
+	if (node != NULL) {
+		return jval_s(node->val);
+	}
+	return NULL;
+}
 
-  return NULL;
+int hasEdge(Graph graph, int v1, int v2)
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return 0;
 
+	JRB node = jrb_find_int(graph.edges, v1);
+	if (node == NULL)
+		return 0;
+	JRB tree = (JRB) jval_v(node ->val);
+	JRB findV2 = jrb_find_int(tree, v2);
+	if (findV2 != NULL)
+		return 1;
+	return 0;
 }
 
 void addEdge(Graph graph, int v1, int v2)
@@ -60,9 +50,8 @@ void addEdge(Graph graph, int v1, int v2)
 		return;
 
 #define ADD_EDGE_MACRO(v1, v2) {  								\
-		JRB node = jrb_find_int(graph.vertices, v1); 					\
+		JRB node = jrb_find_int(graph.edges, v1); 					\
 		JRB tree;												\
-		JRB adjacentofV1; 										\
 		if (node == NULL) 									\
 		{														\
 			tree = make_jrb();								\
@@ -74,85 +63,71 @@ void addEdge(Graph graph, int v1, int v2)
 	}	while(0);
 
 	ADD_EDGE_MACRO(v1, v2);
-    #ifndef DIRECTED_GRAPH
-      ADD_EDGE_MACRO(v2, v1);
-    #endif
+#ifndef DIRECTED_GRAPH
+	ADD_EDGE_MACRO(v2, v1);
+#endif
 #undef ADD_EDGE_MACRO
 
 }
 
 int outDegree(Graph graph, int v, int *output)
 {
-if (graph.edges == NULL || graph.vertices == NULL)
-    return 0;
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return 0;
 
-JRB node = jrb_find_int(graph.edges, v);
-if(node == NULL)
-return 0;
-int total = 0;
-JRB tree = (JRB)jval_v(node->val);
-jrb_traverse(node, tree)
-{
-output[total++] = jval_i(node->key);
-}
+	JRB node = jrb_find_int(graph.edges, v);
+	if (node == NULL)
+		return 0;
+	int total = 0;
+	JRB tree = (JRB)jval_v(node->val);
+	jrb_traverse(node, tree)
+	{
+		output[total++] = jval_i(node->key);
+	}
 
-return total;
+	return total;
 }
 
 int inDegree(Graph graph, int v, int *output)
 {
-if (graph.edges == NULL || graph.vertices == NULL)
-    return 0;
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return 0;
 
-JRB node = jrb_find_int(graph.edges, v);
-if(node == NULL)
-return 0;
-int total = 0;
-jrb_traverse(node, graph.vertices)
-{
-if(hasEdge(graph, jval_i(node->key), v))
-output[total++] = jval_i(node->key);
-}
-
-return total;
-}
-
-
-
-void printVertex(int vertex)
-{
-	printf("%d ", vertex);
-}
-
-void BFS(Graph graph, int start, int stop, void (*func)(int))
-{
-	JRB temp;
-	JRB node;
-	int count = 0;
-	int i;
-	int v;
-	int n;
-	int *visited;
-
-	jrb_traverse(temp, graph)
+	JRB node = jrb_find_int(graph.edges, v);
+	if (node == NULL)
+		return 0;
+	int total = 0;
+	jrb_traverse(node, graph.vertices)
 	{
-		count++;
+		if (hasEdge(graph, jval_i(node->key), v))
+			output[total++] = jval_i(node->key);
 	}
 
-	visited = (int*)malloc(sizeof(int) * count);
+	return total;
+}
+
+void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+
+	int max_id = getMaxId(graph);
+	int v;
+
+	int *visited = (int*)malloc(sizeof(int) * (max_id + 1));
 	if (visited == NULL) {
 		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
 		exit(1);
 	}
 
-	for (i = 0; i < count; ++i)
-		visited[i] = 0;
+	JRB node;
+	jrb_traverse(node, graph.vertices)
+	visited[jval_i(node->key)] = 0;
 
 	Dllist queue = new_dllist();
 
-	int output[count];
-	node = jrb_find_int(graph, start);
-	if (graph == NULL)
+	node = jrb_find_int(graph.edges, start);
+	if (graph.edges == NULL)
 		goto end;
 
 
@@ -166,21 +141,25 @@ void BFS(Graph graph, int start, int stop, void (*func)(int))
 
 		if (visited[v] == 0)
 		{
-			func(v);
+			visitFunc(graph, v);
 			visited[v] = 1;
 		}
 
 		if (v == stop)
 			goto end;
-		JRB u_node = jrb_find_int(graph, v);
 
-		if (u_node == NULL)
+		JRB u = jrb_find_int(graph.edges, v);
+
+		if (u == NULL)
 			continue;
 
-		n = getAdjacentVertices(graph, v, output);
-		for (i = 0; i < n; ++i)
-			if (visited[output[i]] == 0)
-				dll_append(queue, new_jval_i(output[i]));
+		JRB connect_to_u = (JRB)jval_v(u->val);
+		JRB temp;
+		jrb_traverse(temp, connect_to_u)
+		{
+			if (visited[jval_i(temp->key)] == 0)
+				dll_append(queue, new_jval_i(temp->key.i));
+		}
 	}
 
 end:
@@ -190,33 +169,28 @@ end:
 	free_dllist(queue);
 }
 
-void DFS(Graph graph, int start, int stop, void (*func)(int))
+void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 {
-	JRB temp;
-	JRB node;
-	int count = 0;
-	int i;
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+
+	int max_id = getMaxId(graph);
 	int v;
-	int n;
-	int *visited;
-	Dllist stack = new_dllist();
 
-	jrb_traverse(temp, graph)
-	{
-		count++;
-	}
-
-	visited = (int*)malloc(sizeof(int) * count);
+	int *visited = (int*)malloc(sizeof(int) * (max_id + 1));
 	if (visited == NULL) {
 		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
 		exit(1);
 	}
-	for (i = 0; i < count; ++i)
-		visited[i] = 0;
 
-	int output[count];
-	node = jrb_find_int(graph, start);
-	if (graph == NULL)
+	JRB node;
+	jrb_traverse(node, graph.vertices)
+	visited[jval_i(node->key)] = 0;
+
+	Dllist stack = new_dllist();
+
+	node = jrb_find_int(graph.edges, start);
+	if (graph.edges == NULL)
 		goto end;
 
 
@@ -230,21 +204,25 @@ void DFS(Graph graph, int start, int stop, void (*func)(int))
 
 		if (visited[v] == 0)
 		{
-			func(v);
+			visitFunc(graph, v);
 			visited[v] = 1;
 		}
 
 		if (v == stop)
 			goto end;
-		JRB u_node = jrb_find_int(graph, v);
 
-		if (u_node == NULL)
+		JRB u = jrb_find_int(graph.edges, v);
+
+		if (u == NULL)
 			continue;
 
-		n = getAdjacentVertices(graph, v, output);
-		for (i = 0; i < n; ++i)
-			if (visited[output[i]] == 0)
-				dll_append(stack, new_jval_i(output[i]));
+		JRB connect_to_u = (JRB)jval_v(u->val);
+		JRB temp;
+		jrb_traverse(temp, connect_to_u)
+		{
+			if (visited[jval_i(temp->key)] == 0)
+				dll_append(stack, new_jval_i(temp->key.i));
+		}
 	}
 
 end:
@@ -254,6 +232,32 @@ end:
 	free_dllist(stack);
 }
 
+
+int getMaxId(Graph g) {
+	if (g.edges == NULL || g.vertices == NULL)
+		return 0;
+	int max_id = 0;
+	JRB tmp;
+	jrb_traverse(tmp, g.vertices) {
+		int key = jval_i(tmp->key);
+		if (key > max_id)
+			max_id = key;
+	}
+	return max_id;
+}
+
+int getMinId(Graph g) {
+	if (g.edges == NULL || g.vertices == NULL)
+		return 0;
+	int min_id = 10000000;
+	JRB tmp;
+	jrb_traverse(tmp, g.vertices) {
+		int key = jval_i(tmp->key);
+		if (key < min_id)
+			min_id = key;
+	}
+	return min_id;
+}
 
 void dropGraph(Graph graph)
 {
