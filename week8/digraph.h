@@ -17,7 +17,9 @@ char *getVertexName(Graph graph, int id);
 int hasEdge(Graph graph, int v1, int v2);
 void addEdge(Graph graph, int v1, int v2);
 int inDegree(Graph graph, int v, int *output);
+//traverse: start from all vertices to 1 vertex
 int outDegree(Graph graph, int v, int *output);
+//traverse: start from 1 vertex v to all outer vertices
 void showVertexName(Graph graph, int id);
 int getMaxId(Graph g);
 int getMinId(Graph g);
@@ -27,4 +29,5 @@ int isCyclicUtil(Graph graph, int vertex);
 //check for vertex v about existing a cycle
 int DAG(Graph graph);
 //check for acylic graph
+void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int));
 void dropGraph(Graph graph);
