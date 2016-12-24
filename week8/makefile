@@ -1,6 +1,6 @@
 #declare the variable
 CC=gcc
-FLAGS =-g -Wall
+FLAGS = -g -Wall -Wextra -Warray-bounds -Wnonnull
 INCLUDES = -I../lib/include
 # define any directories containing header files other than /usr/include
 LIBS = -L../lib/implementation
@@ -13,6 +13,10 @@ SRCS=test.c digraph.c
 OBJS= $(SRCS:.c=.o)
 EXECUTABLE=test
 
+Digraph: clean
+Digraph: CFLAGS += -DDIRECTED_GRAPH 
+# always have -D before the macro name
+Digraph: all
 
 #  -g    adds debugging information to the executable file
 #  -Wall turns on most, but not all, compiler warnings
