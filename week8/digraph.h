@@ -3,13 +3,13 @@
 //../../lib/include/libfdr/jrb.h
 #include <utility.h>
 //../../lib/include/utility.h
-//2 headers are taken from ../../lib/include 
+//2 headers are taken from ../../lib/include
 #include <stdio.h>
 
-typedef struct{
-JRB edges;
-JRB vertices;
-}Graph;
+typedef struct {
+	JRB edges;
+	JRB vertices;
+} Graph;
 
 Graph createGraph();
 void addVertex(Graph graph, int id, char *name);
@@ -25,6 +25,9 @@ int getMaxId(Graph g);
 int getMinId(Graph g);
 void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));
 void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));
+void DFS_all(Graph graph, void (*visitFunc)(Graph, int));
+//apply when the graph is not connected
+void DFS_ulti(Graph graph, int start, int stop, void (*visitFunc)(Graph, int), int *visited);
 int isCyclicUtil(Graph graph, int vertex);
 //check for vertex v about existing a cycle
 int DAG(Graph graph);

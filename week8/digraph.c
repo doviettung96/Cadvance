@@ -93,19 +93,17 @@ int outDegree(Graph graph, int v, int *output)
 	int total = 0;
 	JRB tree = (JRB)jval_v(node->val);
 	jrb_traverse(node, tree)
-	{
-		output[total++] = jval_i(node->key);
-	}
-
+	output[total++] = jval_i(node->key);
 	return total;
 }
+
 
 int inDegree(Graph graph, int v, int *output)
 {
 	if (graph.edges == NULL || graph.vertices == NULL)
 		return 0;
 
-	JRB node = jrb_find_int(graph.edges, v);
+	JRB node = jrb_find_int(graph.vertices, v);
 	if (node == NULL)
 		return 0;
 	int total = 0;
@@ -117,8 +115,6 @@ int inDegree(Graph graph, int v, int *output)
 
 	return total;
 }
-
-
 
 void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 {
@@ -139,8 +135,8 @@ void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 
 	Dllist queue = new_dllist();
 
-	node = jrb_find_int(graph.edges, start);
-	if (graph.edges == NULL)
+	node = jrb_find_int(graph.vertices, start);
+	if (node == NULL)
 		goto end;
 
 
@@ -244,6 +240,68 @@ end:
 	free_dllist(stack);
 }
 
+
+void DFS_all(Graph graph, void (*visitFunc)(Graph, int))
+{
+	int max_id = getMaxId(graph);
+
+	int *visited = (int*)malloc(sizeof(int) * (max_id + 1));
+	if (visited == NULL) {
+		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
+		exit(1);
+	}
+	for (int i = 0; i <= max_id; ++i)
+		visited[i] = 0;
+
+	for (int i = 0 ; i <= max_id; ++i)
+		if (!visited[i])
+				DFS_ulti(graph, i, -1, visitFunc, visited);
+	free(visited);
+}
+
+void DFS_ulti(Graph graph, int start, int stop, void (*visitFunc)(Graph, int), int *visited)
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+
+	Dllist stack = new_dllist();
+	JRB node = jrb_find_int(graph.vertices, start);
+	if (node == NULL)
+		return;
+
+	dll_append(stack, new_jval_i(start));
+//prepare before visiting all vertices
+	while (!dll_empty(stack))
+	{
+		Dllist node = dll_last(stack);
+		int v = jval_i(node->val);
+		dll_delete_node(node);
+
+		if (visited[v] == 0)
+		{
+			visitFunc(graph, v);
+			visited[v] = 1;
+		}
+
+		if (v == stop)
+			return;
+
+		JRB u = jrb_find_int(graph.edges, v);
+
+		if (u == NULL)
+			continue;
+
+		JRB connect_to_u = (JRB) jval_v(u->val);
+		JRB temp;
+		jrb_traverse(temp, connect_to_u)
+		{
+			if (visited[jval_i(temp->key)] == 0)
+				dll_append(stack, new_jval_i(temp->key.i));
+		}
+	}
+	free_dllist(stack);
+}
+
 int isCyclicUtil(Graph graph, int vertex)
 {
 	if (graph.edges == NULL || graph.vertices == NULL)
@@ -263,8 +321,8 @@ int isCyclicUtil(Graph graph, int vertex)
 
 	Dllist stack = new_dllist();
 
-	node = jrb_find_int(graph.edges, vertex);
-	if (graph.edges == NULL)
+	node = jrb_find_int(graph.vertices, vertex);
+	if (node == NULL)
 		goto end;
 
 	int flag = 0;
@@ -294,7 +352,7 @@ int isCyclicUtil(Graph graph, int vertex)
 		}
 		//there is a cycle
 
-		flag = flag + 1;
+		flag = flag + 1; //start to run the inverse way from the beginning
 
 		JRB v_node = jrb_find_int(graph.edges, v);
 
@@ -373,9 +431,9 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 	if (g.edges == NULL || g.vertices == NULL)
 		return;
 	Dllist queue = new_dllist(); //initialize an empty queue
-
+	JRB temp;
 	JRB node = jrb_find_int(g.vertices, getMinId(g));
-	if(node == NULL)
+	if (node == NULL)
 		goto end;
 
 	int max_id = getMaxId(g);
@@ -391,10 +449,10 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 		exit(1);
 	}
 
-	jrb_traverse(node, g.vertices)
+	jrb_traverse(temp, g.vertices)
 	{
-		int v = jval_i(node->key);
-		if (inDegree(g, v, in_degree_list_v) == 0)
+		int v = jval_i(temp->key);
+		if ((in_degree_table[v] = inDegree(g, v, in_degree_list_v)) == 0)
 			dll_append(queue, new_jval_i(v));
 	}
 	free(in_degree_list_v);
@@ -418,13 +476,14 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 
 		int out_degree_num_u = outDegree(g, u, out_degree_list_u);
 		//traverse through all out degree vertices of u
-		if(out_degree_num_u != 0) // if we have out degree vertices of u
+		if (out_degree_num_u != 0) // if we have out degree vertices of u
 		{
-			for(int i = 0; i < out_degree_num_u; ++i)
+			for (int i = 0; i < out_degree_num_u; ++i)
 			{
 				int w = out_degree_list_u[i];
-				in_degree_table[w] -= 1; 
-				if(in_degree_table[w] == 0)
+				in_degree_table[w] -= 1;
+
+				if (in_degree_table[w] == 0)
 					dll_append(queue, new_jval_i(w));
 			}
 		}
