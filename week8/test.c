@@ -12,12 +12,19 @@ int main()
     addVertex(g, 3, "3");
     addVertex(g, 4, "4");
 
+    // addEdge(g, 1, 0);
+    // addEdge(g, 0, 2);
+    // addEdge(g, 2, 1);
+    // addEdge(g, 0, 3);
+    // addEdge(g, 1, 4);
     addEdge(g, 1, 0);
     addEdge(g, 2, 1);
     addEdge(g, 3, 4);
     addEdge(g, 4, 0);
 
-// #define PRINT_ADJACENT_VERTIES(v) {                                 \
+
+
+// #define printfINT_ADJACENT_VERTIES(v) {                                 \
 //           n = outDegree(g, v, output);                              \
 //           if(n == 0)                                                \
 //                printf("No adjacent vertices of node " #v " \n");     \
@@ -42,12 +49,13 @@ int main()
     printf("\n");
 
     printf("DFS order: \n");
-    DFS(g, showVertexName, 0);
+    DFS(g, 0, -1, showVertexName);
     printf("\n");
 
-    printf("DFS_recur order: \n");
-    DFS(g, showVertexName, 1);
+    printf("DFS_all order: \n");
+    DFS_all(g, showVertexName);
     printf("\n");
+
 
     if (DAG(g) == 0)
         printf("Can not make topological sort\n");
