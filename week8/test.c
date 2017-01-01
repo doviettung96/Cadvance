@@ -12,27 +12,15 @@ int main()
     addVertex(g, 3, "3");
     addVertex(g, 4, "4");
 
-<<<<<<< HEAD
-=======
     // addEdge(g, 1, 0);
     // addEdge(g, 0, 2);
     // addEdge(g, 2, 1);
     // addEdge(g, 0, 3);
     // addEdge(g, 1, 4);
->>>>>>> parallel
     addEdge(g, 1, 0);
     addEdge(g, 2, 1);
     addEdge(g, 3, 4);
     addEdge(g, 4, 0);
-<<<<<<< HEAD
-    printf("\n");
-    printf("DFS order\n");
-    DFS(g, 0, -1, showVertexName);
-    printf("BFS order\n");
-    BFS(g, 0, -1, showVertexName);
-    printf("\n");
-    if (!DAG(g))
-=======
 
 
 
