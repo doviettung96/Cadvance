@@ -197,8 +197,8 @@ void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 
 	Dllist stack = new_dllist();
 
-	node = jrb_find_int(graph.edges, start);
-	if (graph.edges == NULL)
+	node = jrb_find_int(graph.vertices, start);
+	if (node == NULL)
 		goto end;
 
 
@@ -354,7 +354,7 @@ int isCyclicUtil(Graph graph, int vertex)
 
 		flag = flag + 1; //start to run the inverse way from the beginning
 
-		JRB v_node = jrb_find_int(graph.edges, v);
+		JRB v_node = jrb_find_int(graph.vertices, v);
 
 		if (v_node == NULL)
 			continue;

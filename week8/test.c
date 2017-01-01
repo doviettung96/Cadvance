@@ -1,5 +1,9 @@
 #include "digraph.h"
 
+int list[10];
+int i = 0;
+void storeVertexName(Graph graph, int id);
+
 int main()
 {
     Graph g = createGraph();
@@ -12,11 +16,6 @@ int main()
     addVertex(g, 3, "3");
     addVertex(g, 4, "4");
 
-    // addEdge(g, 1, 0);
-    // addEdge(g, 0, 2);
-    // addEdge(g, 2, 1);
-    // addEdge(g, 0, 3);
-    // addEdge(g, 1, 4);
     addEdge(g, 1, 0);
     addEdge(g, 2, 1);
     addEdge(g, 3, 4);
@@ -56,12 +55,15 @@ int main()
     DFS_all(g, showVertexName);
     printf("\n");
 
-
     if (DAG(g) == 0)
         printf("Can not make topological sort\n");
     else
     {
         printf("The topological order: \n");
+        topologicalSort(g, output, &n, storeVertexName);
+        for (int i = 0; i <= getMaxId(g); ++i)
+            printf("%d ", list[i]);
+        printf("\n");
         topologicalSort(g, output, &n, showVertexName);
         printf("\n");
     }
@@ -70,3 +72,12 @@ int main()
     return 0;
 }
 
+void storeVertexName(Graph graph, int id)
+{
+    if (graph.edges == NULL || graph.vertices == NULL)
+        return ;
+    JRB node = jrb_find_int(graph.vertices, id);
+    if (node != NULL) {
+        list[i++] = id;
+    }
+}
