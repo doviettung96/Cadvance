@@ -277,6 +277,7 @@ int isCyclicUtil(Graph graph, int vertex)
 		Dllist node = dll_last(stack);
 		int v = jval_i(node->val);
 		dll_delete_node(node);
+		//pop an element from the stack
 
 		if (visited[v] == 0)
 		{
@@ -295,9 +296,9 @@ int isCyclicUtil(Graph graph, int vertex)
 
 		flag = flag + 1;
 
-		JRB u = jrb_find_int(graph.edges, v);
+		JRB v_node = jrb_find_int(graph.edges, v);
 
-		if (u == NULL)
+		if (v_node == NULL)
 			continue;
 
 		int *out_degree_list = (int *)malloc(sizeof(int) * (max_id + 1));
@@ -305,8 +306,10 @@ int isCyclicUtil(Graph graph, int vertex)
 			fprintf(stderr, "%s %s:%d\n", "malloc failed in", __FILE__, __LINE__);
 			exit(1);
 		}
-		//out degree vertices of u
+		//out degree vertices list of u
+
 		int out_degree_num = outDegree(graph, v, out_degree_list);
+		//number of out degree vertices of v
 		if (out_degree_num == 0)
 			continue;
 
@@ -316,7 +319,7 @@ int isCyclicUtil(Graph graph, int vertex)
 			if (visited[temp] == 0)
 				dll_append(stack, new_jval_i(temp));
 		}
-
+		//traverse through the out degree list of vertex v
 		free(out_degree_list);
 	}
 
@@ -365,12 +368,79 @@ int getMinId(Graph g) {
 	return min_id;
 }
 
+void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int))
+{
+	if (g.edges == NULL || g.vertices == NULL)
+		return;
+	Dllist queue = new_dllist(); //initialize an empty queue
+
+	JRB node = jrb_find_int(g.vertices, getMinId(g));
+	if(node == NULL)
+		goto end;
+
+	int max_id = getMaxId(g);
+	int *in_degree_table = malloc(sizeof(int) * (max_id + 1)); //in degree table of the DAG
+	if (in_degree_table == NULL) {
+		fprintf(stderr, "%s in %s:%d !!\n", "malloc failed", __FILE__, __LINE__);
+		exit(1);
+	}
+
+	int *in_degree_list_v = malloc(sizeof(int) * (max_id + 1)); //in degree list of v
+	if (in_degree_list_v == NULL) {
+		fprintf(stderr, "%s in %s:%d !!\n", "malloc failed", __FILE__, __LINE__);
+		exit(1);
+	}
+
+	jrb_traverse(node, g.vertices)
+	{
+		int v = jval_i(node->key);
+		if (inDegree(g, v, in_degree_list_v) == 0)
+			dll_append(queue, new_jval_i(v));
+	}
+	free(in_degree_list_v);
+	//enqueue all the vertices with in_degree == 0
+
+	while (!dll_empty(queue))
+	{
+		Dllist node = dll_first(queue);
+		int u = jval_i(node->val);
+		dll_delete_node(node);
+		//just the normal dequeue
+
+		visitFunc(g, u);
+
+		int *out_degree_list_u = malloc(sizeof(int) * (max_id + 1)); //out degree list of u
+		//we use it to consider arc(u, w)
+		if (out_degree_list_u == NULL) {
+			fprintf(stderr, "%s in %s:%d !!\n", "malloc failed", __FILE__, __LINE__);
+			exit(1);
+		}
+
+		int out_degree_num_u = outDegree(g, u, out_degree_list_u);
+		//traverse through all out degree vertices of u
+		if(out_degree_num_u != 0) // if we have out degree vertices of u
+		{
+			for(int i = 0; i < out_degree_num_u; ++i)
+			{
+				int w = out_degree_list_u[i];
+				in_degree_table[w] -= 1; 
+				if(in_degree_table[w] == 0)
+					dll_append(queue, new_jval_i(w));
+			}
+		}
+		free(out_degree_list_u);
+	}
+end:
+	free(in_degree_table);
+	free_dllist(queue);
+}
+
 void dropGraph(Graph graph)
 {
-	JRB ptr;
-	jrb_traverse(ptr, graph.edges)
+	JRB node;
+	jrb_traverse(node, graph.edges)
 	{
-		jrb_free_tree(jval_v(ptr->val));
+		jrb_free_tree(jval_v(node->val));
 	}
 	jrb_free_tree(graph.vertices);
 	jrb_free_tree(graph.edges);
