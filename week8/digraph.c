@@ -116,8 +116,6 @@ int inDegree(Graph graph, int v, int *output)
 	return total;
 }
 
-
-
 void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 {
 	if (graph.edges == NULL || graph.vertices == NULL)
@@ -137,8 +135,8 @@ void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 
 	Dllist queue = new_dllist();
 
-	node = jrb_find_int(graph.edges, start);
-	if (graph.edges == NULL)
+	node = jrb_find_int(graph.vertices, start);
+	if (node == NULL)
 		goto end;
 
 
@@ -180,11 +178,8 @@ end:
 	free_dllist(queue);
 }
 
-void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
+void DFS(Graph graph, void (*visitFunc)(Graph, int), int isRecur)
 {
-	if (graph.edges == NULL || graph.vertices == NULL)
-		return;
-
 	int max_id = getMaxId(graph);
 
 	int *visited = (int*)malloc(sizeof(int) * (max_id + 1));
@@ -192,17 +187,29 @@ void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 		fprintf(stderr, "Allocated failed in %s:%d \n", __FILE__, __LINE__);
 		exit(1);
 	}
+	for (int i = 0; i <= max_id; ++i)
+		visited[i] = 0;
 
-	JRB node;
-	jrb_traverse(node, graph.vertices)
-	visited[jval_i(node->key)] = 0;
+	for (int i = 0 ; i <= max_id; ++i)
+		if (!visited[i])
+		{
+			if (isRecur == 0)
+				DFS_ulti(graph, i, -1, visitFunc, visited);
+			else
+				DFS_recur(graph, i, -1, visitFunc, visited);
+		}
+	free(visited);
+}
+
+void DFS_ulti(Graph graph, int start, int stop, void (*visitFunc)(Graph, int), int *visited)
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
 
 	Dllist stack = new_dllist();
-
-	node = jrb_find_int(graph.edges, start);
+	JRB node = jrb_find_int(graph.edges, start);
 	if (node == NULL)
-		goto end;
-
+		return;
 
 	dll_append(stack, new_jval_i(start));
 //prepare before visiting all vertices
@@ -214,12 +221,12 @@ void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 
 		if (visited[v] == 0)
 		{
-			visitFunc(graph, v);
 			visited[v] = 1;
+			visitFunc(graph, v);
 		}
 
 		if (v == stop)
-			goto end;
+			return;
 
 		JRB u = jrb_find_int(graph.edges, v);
 
@@ -234,12 +241,28 @@ void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int))
 				dll_append(stack, new_jval_i(temp->key.i));
 		}
 	}
-
-end:
-	printf("\n");
-
-	free(visited);
 	free_dllist(stack);
+}
+
+void DFS_recur(Graph graph, int start, int stop, void (*visitFunc)(Graph, int), int *visited)
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+
+	JRB node = jrb_find_int(graph.edges, start);
+	if (node == NULL)
+		return;
+
+	visited[start] = 1;
+	visitFunc(graph, start);
+	if (start == stop)
+		return;
+	JRB connect_to_start = (JRB) jval_v(node->val);
+	jrb_traverse(node, connect_to_start)
+	{
+		if (visited[jval_i(node->key)] == 0)
+			DFS_recur(graph, jval_i(node->key), stop, showVertexName, visited);
+	}
 }
 
 int isCyclicUtil(Graph graph, int vertex)

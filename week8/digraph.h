@@ -24,7 +24,10 @@ void showVertexName(Graph graph, int id);
 int getMaxId(Graph g);
 int getMinId(Graph g);
 void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));
-void DFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));
+void DFS(Graph graph, void (*visitFunc)(Graph, int), int isRecur);
+void DFS_ulti(Graph graph, int start, int stop, void (*visitFunc)(Graph, int), int *visited);
+void DFS_recur(Graph graph, int start, int stop, void (*visitFunc)(Graph, int), int *visited);
+// void DFS_recur(Graph graph, int start, int stop, int *);
 int isCyclicUtil(Graph graph, int vertex);
 //check for vertex v about existing a cycle
 int DAG(Graph graph);
