@@ -19,6 +19,8 @@ char *getVertexName(Graph graph, int id);
 int hasEdge(Graph graph, int v1, int v2);
 void addEdge(Graph graph, int v1, int v2, double weight);
 double getEdgeValue(Graph graph, int v1, int v2); // return INFINITIVE_VALUE if no edge between v1 and v2
+int countVertices(Graph graph);
+int countEdges(Graph graph);
 int inDegree(Graph graph, int v, int *output);
 //traverse: start from all vertices to 1 vertex
 int outDegree(Graph graph, int v, int *output);

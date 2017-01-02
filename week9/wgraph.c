@@ -29,6 +29,25 @@ char *getVertexName(Graph graph, int id)
 	return NULL;
 }
 
+int countVertices(Graph graph)
+{
+	int count = 0;
+	JRB node;
+	jrb_traverse(node, graph.vertices)
+	count++;
+	return count;
+}
+
+int countEdges(Graph graph)
+{
+	int count = 0;
+	JRB node;
+	int output[getMaxId(graph) + 1];
+	jrb_traverse(node, graph.vertices)
+		count += inDegree(graph, jval_i(node->key), output);
+	return count;
+}
+
 void showVertexName(Graph graph, int id)
 {
 	if (graph.edges == NULL || graph.vertices == NULL)

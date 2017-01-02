@@ -9,9 +9,9 @@ LIBS = -L../lib/implementation
 LFLAGS= -lfdr -lutility
 #to run all the .a file
 CFLAGS=-c $(FLAG)
-SRCS=test.c wgraph.c
+SRCS=exam.c wgraph.c
 OBJS= $(SRCS:.c=.o)
-EXECUTABLE=test
+EXECUTABLE=exam
 
 Digraph: clean
 Digraph: CFLAGS += -DDIRECTED_GRAPH 
