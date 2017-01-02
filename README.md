@@ -1,0 +1,2 @@
+For DIRECTED_GRAPH: make Digraph
+For UNDIRECTED_GRAPH: make
