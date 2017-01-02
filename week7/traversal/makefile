@@ -9,9 +9,9 @@ LIBS = -L../../lib/implementation
 LFLAGS= -lfdr -lutility
 #to run all the .a file
 CFLAGS=-c $(FLAG)
-SRCS=test_traversal.c graph_rb.c
+SRCS=test_metro.c graph_rb.c
 OBJS= $(SRCS:.c=.o)
-EXECUTABLE=test_traversal
+EXECUTABLE=test_metro
 
 
 #  -g    adds debugging information to the executable file
