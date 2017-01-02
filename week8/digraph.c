@@ -8,6 +8,25 @@ Graph createGraph()
 	return graph;
 }
 
+int countVertices(Graph graph)
+{
+	int count = 0;
+	JRB node;
+	jrb_traverse(node, graph.vertices)
+	count++;
+	return count;
+}
+
+int countEdges(Graph graph)
+{
+	int count = 0;
+	JRB node;
+	int output[getMaxId(graph) + 1];
+	jrb_traverse(node, graph.vertices)
+		count += inDegree(graph, jval_i(node->key), output);
+	return count;
+}
+
 void addVertex(Graph graph, int id, char *name)
 {
 	if (graph.edges == NULL || graph.vertices == NULL)
@@ -428,6 +447,7 @@ int getMinId(Graph g) {
 
 void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int))
 {
+	int count = 0;
 	if (g.edges == NULL || g.vertices == NULL)
 		return;
 	Dllist queue = new_dllist(); //initialize an empty queue
@@ -464,7 +484,7 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 		int u = jval_i(node->val);
 		dll_delete_node(node);
 		//just the normal dequeue
-
+		output[count++] = u;
 		visitFunc(g, u);
 
 		int *out_degree_list_u = malloc(sizeof(int) * (max_id + 1)); //out degree list of u
@@ -490,6 +510,7 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 		free(out_degree_list_u);
 	}
 end:
+	*n = count;
 	free(in_degree_table);
 	free_dllist(queue);
 }

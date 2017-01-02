@@ -5,6 +5,7 @@
 //../../lib/include/utility.h
 //2 headers are taken from ../../lib/include
 #include <stdio.h>
+#include <assert.h>
 
 typedef struct {
 	JRB edges;
@@ -14,6 +15,8 @@ typedef struct {
 Graph createGraph();
 void addVertex(Graph graph, int id, char *name);
 char *getVertexName(Graph graph, int id);
+int countVertices(Graph graph);
+int countEdges(Graph graph);
 int hasEdge(Graph graph, int v1, int v2);
 void addEdge(Graph graph, int v1, int v2);
 int inDegree(Graph graph, int v, int *output);

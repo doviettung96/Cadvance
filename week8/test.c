@@ -1,7 +1,6 @@
 #include "digraph.h"
 
-int list[10];
-int i = 0;
+
 void storeVertexName(Graph graph, int id);
 
 int main()
@@ -11,28 +10,28 @@ int main()
     int n;
     int id[4];
     char name[4][100];
-    printf("Type in the name for 4 vertices: \n");
-    for(int j = 0; j <= 4; ++j)
-    {
-        printf("ID = ");
-        scanf("%d", &id[j]);
-        printf("%d-th vertex name: ", j);
-        scanf("%s", name[j]);
-        myfflush();
-    }
-    for(int j = 0; j <= 4; ++j)
-        addVertex(g, id[j], name[j]);
-    for(int j = 0; j <= 4; ++j)
-    {
-        printf("ID = %d: ", id[j]);
-        showVertexName(g, id[j]);
-        printf("\n");
-    }
-    // addVertex(g, 0, "0");
-    // addVertex(g, 1, "1");
-    // addVertex(g, 2, "2");
-    // addVertex(g, 3, "3");
-    // addVertex(g, 4, "4");
+    // printf("Type in the name for 4 vertices: \n");
+    // for(int j = 0; j <= 4; ++j)
+    // {
+    //     printf("ID = ");
+    //     scanf("%d", &id[j]);
+    //     printf("%d-th vertex name: ", j);
+    //     scanf("%s", name[j]);
+    //     myfflush();
+    // }
+    // for(int j = 0; j <= 4; ++j)
+    //     addVertex(g, id[j], name[j]);
+    // for(int j = 0; j <= 4; ++j)
+    // {
+    //     printf("ID = %d: ", id[j]);
+    //     showVertexName(g, id[j]);
+    //     printf("\n");
+    // }
+    addVertex(g, 0, "0");
+    addVertex(g, 1, "1");
+    addVertex(g, 2, "2");
+    addVertex(g, 3, "3");
+    addVertex(g, 4, "4");
 
     addEdge(g, 1, 0);
     addEdge(g, 2, 1);
@@ -78,24 +77,14 @@ int main()
     else
     {
         printf("The topological order: \n");
-        topologicalSort(g, output, &n, storeVertexName);
-        for (int i = 0; i <= getMaxId(g); ++i)
-            printf("%d ", list[i]);
-        printf("\n");
+       
         topologicalSort(g, output, &n, showVertexName);
+        printf("\n");
+        for(int i = 0; i < n; ++i)
+            showVertexName(g, output[i]);
         printf("\n");
     }
     dropGraph(g);
     // free(list);
     return 0;
-}
-
-void storeVertexName(Graph graph, int id)
-{
-    if (graph.edges == NULL || graph.vertices == NULL)
-        return ;
-    JRB node = jrb_find_int(graph.vertices, id);
-    if (node != NULL) {
-        list[i++] = id;
-    }
 }
