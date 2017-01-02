@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <assert.h>
 
 int getMenu(char sections[][40], int maxsection);
 //create a menu
@@ -12,3 +13,4 @@ void myfflush();
 void standardizeName(char *str);
 // standardized name such as trim string, turn a >> A for first leter
 
+char** str_split(char* a_str, const char a_delim);

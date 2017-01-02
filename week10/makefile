@@ -1,17 +1,17 @@
 #declare the variable
 CC=gcc
 FLAGS =-g -Wall
-INCLUDES = -I../../lib/include
+INCLUDES = -I../lib/include
 # define any directories containing header files other than /usr/include
-LIBS = -L../../lib/implementation
+LIBS = -L../lib/implementation
 #define any directories containing implementation of the files in INCLUDES
 #../../lib means up 2 level then search for /lib
 LFLAGS= -lfdr -lutility
 #to run all the .a file
 CFLAGS=-c $(FLAG)
-SRCS=test_traversal.c graph_rb.c
+SRCS=test.c digraph.c huffman.c
 OBJS= $(SRCS:.c=.o)
-EXECUTABLE=test_traversal
+EXECUTABLE=test
 
 
 #  -g    adds debugging information to the executable file
