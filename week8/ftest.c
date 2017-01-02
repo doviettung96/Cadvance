@@ -20,11 +20,12 @@ int main()
 		for (int j = 0; j < is->NF; ++j)
 		{
 			name1 = (char *)malloc(sizeof(char) * 10);
-			strcpy(name1, is->fields[0]);
+			strcpy(name1, is->fields[j]);
 			add_vertex_auto_increment(graph, name1);
-			if (j < 1)
-				continue;
-
+		}
+		for (int j = 1; j < is->NF; ++j)
+		{
+			strcpy(name1, is->fields[0]);
 			strcpy(name2, is->fields[j]);
 			addEdge(graph, getVertexId(graph, name2), getVertexId(graph, name1));
 		}
