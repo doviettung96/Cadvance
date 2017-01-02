@@ -9,12 +9,30 @@ int main()
     Graph g = createGraph();
     int output[10];
     int n;
-
-    addVertex(g, 0, "0");
-    addVertex(g, 1, "1");
-    addVertex(g, 2, "2");
-    addVertex(g, 3, "3");
-    addVertex(g, 4, "4");
+    int id[4];
+    char name[4][100];
+    printf("Type in the name for 4 vertices: \n");
+    for(int j = 0; j <= 4; ++j)
+    {
+        printf("ID = ");
+        scanf("%d", &id[j]);
+        printf("%d-th vertex name: ", j);
+        scanf("%s", name[j]);
+        myfflush();
+    }
+    for(int j = 0; j <= 4; ++j)
+        addVertex(g, id[j], name[j]);
+    for(int j = 0; j <= 4; ++j)
+    {
+        printf("ID = %d: ", id[j]);
+        showVertexName(g, id[j]);
+        printf("\n");
+    }
+    // addVertex(g, 0, "0");
+    // addVertex(g, 1, "1");
+    // addVertex(g, 2, "2");
+    // addVertex(g, 3, "3");
+    // addVertex(g, 4, "4");
 
     addEdge(g, 1, 0);
     addEdge(g, 2, 1);
@@ -23,7 +41,7 @@ int main()
 
 
 
-// #define printfINT_ADJACENT_VERTIES(v) {                                 \
+// #define PRINT_ADJACENT_VERTIES(v) {                                 \
 //           n = outDegree(g, v, output);                              \
 //           if(n == 0)                                                \
 //                printf("No adjacent vertices of node " #v " \n");     \
