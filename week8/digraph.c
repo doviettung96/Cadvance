@@ -23,7 +23,7 @@ int countEdges(Graph graph)
 	JRB node;
 	int output[getMaxId(graph) + 1];
 	jrb_traverse(node, graph.vertices)
-		count += inDegree(graph, jval_i(node->key), output);
+	count += inDegree(graph, jval_i(node->key), output);
 	return count;
 }
 
@@ -36,6 +36,15 @@ void addVertex(Graph graph, int id, char *name)
 		jrb_insert_int(graph.vertices, id, new_jval_s(name));
 }
 
+void add_vertex_auto_increment(Graph graph, char *name) {
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+	if (getVertexId(graph, name) != -1)
+		return;
+	int v = getMaxId(graph) + 1;
+	addVertex(graph, v, name);
+}
+
 char *getVertexName(Graph graph, int id)
 {
 	if (graph.edges == NULL || graph.vertices == NULL)
@@ -46,6 +55,18 @@ char *getVertexName(Graph graph, int id)
 		return jval_s(node->val);
 	}
 	return NULL;
+}
+
+int getVertexId(Graph graph, char *name)
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return -1;
+
+	JRB node;
+	jrb_traverse(node, graph.vertices)
+	if (!strcmp(name, jval_s(node->val)))
+		return jval_i(node->key);
+	return -1;
 }
 
 void showVertexName(Graph graph, int id)
@@ -274,7 +295,7 @@ void DFS_all(Graph graph, void (*visitFunc)(Graph, int))
 
 	for (int i = 0 ; i <= max_id; ++i)
 		if (!visited[i])
-				DFS_ulti(graph, i, -1, visitFunc, visited);
+			DFS_ulti(graph, i, -1, visitFunc, visited);
 	free(visited);
 }
 
