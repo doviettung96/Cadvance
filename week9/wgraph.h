@@ -41,6 +41,6 @@ int isCyclicUtil(Graph graph, int vertex); //check for vertex v about existing a
 int DAG(Graph graph); //check for acylic graph
 // return the total weight of the path and the path is given via path and its length.
 // Return INFINITIVE_VALUE if no path is found
-void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int));
+void topologicalSort(Graph g, int *output, int *n);
 double shortestPath(Graph graph, int s, int t, int* path, double* length);
 void dropGraph(Graph graph);

@@ -483,8 +483,9 @@ int getMinId(Graph g) {
 	return min_id;
 }
 
-void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int))
+void topologicalSort(Graph g, int *output, int *n)
 {
+	int count = 0;
 	if (g.edges == NULL || g.vertices == NULL)
 		return;
 	Dllist queue = new_dllist(); //initialize an empty queue
@@ -521,8 +522,8 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 		int u = jval_i(node->val);
 		dll_delete_node(node);
 		//just the normal dequeue
-
-		visitFunc(g, u);
+		output[count++] = u;
+		// visitFunc(g, u);
 
 		int *out_degree_list_u = malloc(sizeof(int) * (max_id + 1)); //out degree list of u
 		//we use it to consider arc(u, w)
@@ -547,6 +548,7 @@ void topologicalSort(Graph g, int *output, int *n, void (* visitFunc)(Graph, int
 		free(out_degree_list_u);
 	}
 end:
+	*n = count;
 	free(in_degree_table);
 	free_dllist(queue);
 }
