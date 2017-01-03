@@ -1,5 +1,6 @@
 #include <libfdr/jrb.h>
 #include <libfdr/dllist.h>
+#include <libfdr/fields.h>
 //../../lib/include/libfdr/jrb.h
 #include <utility.h>
 //../../lib/include/utility.h
@@ -14,6 +15,8 @@ typedef struct {
 } Graph;
 
 Graph createGraph();
+void index_to_name(int i, int j, char *name);
+void add_vertex_auto_increment(Graph graph, char *name);
 void addVertex(Graph graph, int id, char *name);
 char *getVertexName(Graph graph, int id);
 int hasEdge(Graph graph, int v1, int v2);
@@ -26,6 +29,7 @@ int inDegree(Graph graph, int v, int *output);
 int outDegree(Graph graph, int v, int *output);
 //traverse: start from 1 vertex v to all outer vertices
 void showVertexName(Graph graph, int id);
+int getVertexId(Graph graph, char *name);
 int getMaxId(Graph g);
 int getMinId(Graph g);
 void BFS(Graph graph, int start, int stop, void (*visitFunc)(Graph, int));

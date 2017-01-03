@@ -8,6 +8,29 @@ Graph createGraph()
 	return graph;
 }
 
+void add_vertex_auto_increment(Graph graph, char *name) {
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return;
+	if (getVertexId(graph, name) != -1)
+		return;
+	int v = getMaxId(graph) + 1;
+	addVertex(graph, v, name);
+}
+void index_to_name(int i, int j, char *name){
+	sprintf(name, "%d%d", i, j);
+}
+
+int getVertexId(Graph graph, char *name)
+{
+	if (graph.edges == NULL || graph.vertices == NULL)
+		return -1;
+
+	JRB node;
+	jrb_traverse(node, graph.vertices)
+	if (!strcmp(name, jval_s(node->val)))
+		return jval_i(node->key);
+	return -1;
+}
 void addVertex(Graph graph, int id, char *name)
 {
 	if (graph.edges == NULL || graph.vertices == NULL)
