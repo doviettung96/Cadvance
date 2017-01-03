@@ -8,6 +8,57 @@ Graph createGraph()
 	return graph;
 }
 
+void index_to_name(int i, int j, char *name){
+	sprintf(name, "%d%d", i, j);
+}
+
+void add_all_vertices(Graph G, char *fn){
+	IS is = new_inputstruct(fn);
+	if(!is){
+		printf("error!\n");
+		return;
+	}
+	char *name;
+	while(get_line(is) >= 0){
+		name = (char*)malloc(sizeof(char)*10);
+		strcpy(name, is->fields[0]);
+		add_vertex_auto_increment(G, name);
+		log("add vertex: '%s'\n", name);
+	}
+	jettison_inputstruct(is);
+}
+
+void add_all_edges(Graph G, char *fn){
+	IS is = new_inputstruct(fn);
+	if(!is){
+		printf("error!\n");
+		return;
+	}
+	char name1[10], name2[10];
+	int v1, v2, i;
+	double w;
+	char *token;
+	char temp[100];
+	while(get_line(is) >= 0){
+		strcpy(name2, is->fields[0]);
+		for(i=2; i<is->NF; i++){
+			strcpy(temp, is->fields[i]);
+			token = strtok(temp, "-");
+			if(token){
+				strcpy(name1, token);
+				token = strtok(NULL, "-");
+				w = atof(token);
+				v1 = get_vertex_id(G, name1);
+				v2 = get_vertex_id(G, name2);
+				if(v1 < 0 || v2 < 0)
+					continue;
+				add_edge(G, v1, v2, w, DIRECTED);
+				log("add edge %s -> %s weight=%f\n", name1, name2, w);	
+			}
+		}
+	}
+	jettison_inputstruct(is);
+}
 int countVertices(Graph graph)
 {
 	int count = 0;

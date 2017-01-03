@@ -46,7 +46,7 @@ Fax: 865-974-4404
 typedef struct inputstruct {
   char *name;               /* File name */
   FILE *f;                  /* File descriptor */
-  int line;                 /* Line number */
+  int line;                 /* Line number-th */
   char text1[MAXLEN];       /* The line */
   char text2[MAXLEN];       /* Working -- contains fields */
   int NF;                   /* Number of fields */

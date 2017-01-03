@@ -14,6 +14,9 @@ typedef struct {
 
 Graph createGraph();
 void addVertex(Graph graph, int id, char *name);
+void index_to_name(int i, int j, char *name);
+void add_all_vertices(Graph G, char *fn);
+void add_all_edges(Graph G, char *fn);
 void add_vertex_auto_increment(Graph graph, char *name);
 char *getVertexName(Graph graph, int id);
 int countVertices(Graph graph);
